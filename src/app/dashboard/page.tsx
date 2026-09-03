@@ -7,7 +7,7 @@ import { SourceBreakdown } from "@/components/dashboard/source-breakdown";
 import { TopTracks } from "@/components/dashboard/top-tracks";
 import { TrackList, type DashboardTrack } from "@/components/dashboard/track-list";
 import { UploadModal } from "@/components/upload/upload-modal";
-import { UserIcon } from "@/components/ui/icons";
+import { InfoIcon, UserIcon } from "@/components/ui/icons";
 import { getDashboardAnalytics } from "@/lib/dashboard-analytics";
 import { createClient } from "@/lib/supabase/server";
 
@@ -29,6 +29,7 @@ export default async function DashboardPage() {
       <nav>
         <Link className="wordmark" href="/dashboard">PUBLISH<span>MAX</span></Link>
         <div className="nav-actions">
+          <Link className="text-button nav-note-link" href="/builders-note"><InfoIcon /> Builder&apos;s Note</Link>
           <Link className="text-button nav-profile-link" href={`/profile/${user.id}`}><UserIcon /> Profile</Link>
           <UploadModal />
           <form action="/auth/signout" method="post"><button className="text-button" type="submit">Sign out</button></form>
