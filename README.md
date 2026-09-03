@@ -56,13 +56,18 @@ Ready tracks expose an iframe player at `/embed/{trackId}`. The dashboard provid
 
 Referrer headers are not guaranteed across every host. Add `utm_source`, `utm_medium`, and `utm_campaign` query parameters to iframe URLs when deterministic placement attribution is required.
 
-## X sharing
+## Platform sharing
 
 Deploy the Next.js application to a public HTTPS host and set `NEXT_PUBLIC_APP_URL` to its origin, for example `https://app.publishmax.com`. Add the same value to the local environment when generating production share links. `NEXT_PUBLIC_X_HANDLE` is optional and should remain empty until PublishMax has an official X account.
 
-Ready tracks provide three dashboard actions: share on X, copy iframe, and copy player link. The X action shares `/share/x/{trackId}`, whose initial server-rendered HTML contains Player Card metadata and Open Graph fallback metadata. Its restricted `/share/x/{trackId}/player` iframe contains only linear playback controls and records events with `utm_source=x`.
+Ready tracks provide X, Discord, Reddit, iframe, and direct-player actions. Each platform URL returns server-rendered metadata and a tracked PublishMax landing player:
 
-Before testing, verify as a signed-out visitor that the HTTPS share page, player iframe, cover image, and MP3 all return successfully without redirects. X cannot crawl localhost. X controls Player Card domain acceptance and client rendering, so valid metadata may still fall back to a cover-art card that opens the PublishMax player. Card metadata can remain cached after changes; use a newly generated track URL or a harmless version query parameter for repeated tests.
+- `/share/x/{trackId}` provides Player Card metadata plus an Open Graph fallback. Its restricted player records `utm_source=x`.
+- `/share/discord/{trackId}` provides a large Open Graph preview and red Discord embed theme. Copy the generated link into a channel; Discord does not support arbitrary Open Graph audio playback.
+- `/share/reddit/{trackId}` opens Reddit's link-post composer with an optimized title and rich preview. Reddit does not render third-party iframes in posts.
+- `/share/image/{trackId}` generates a 1200×630 branded preview image used by Discord and Reddit.
+
+Before testing, verify as a signed-out visitor that the HTTPS share page, preview image, cover image, and MP3 all return successfully without redirects. Platform crawlers cannot access localhost. X controls Player Card rendering, while Discord and Reddit control preview layout and caching. Use a newly generated URL or a harmless version query parameter when retesting cached metadata.
 
 ## Verification
 

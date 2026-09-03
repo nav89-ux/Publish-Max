@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+type CopyAction = "embed" | "link" | "discord";
+
 export type DashboardTrack = {
   id: string;
   title: string;
@@ -13,7 +15,7 @@ export type DashboardTrack = {
 
 export function TrackList({ tracks }: { tracks: DashboardTrack[] }) {
   const router = useRouter();
-  const [copyState, setCopyState] = useState<{ trackId: string; action: "embed" | "link"; status: "copied" | "failed" } | null>(null);
+  const [copyState, setCopyState] = useState<{ trackId: string; action: CopyAction; status: "copied" | "failed" } | null>(null);
   const hasPendingTrack = tracks.some((track) => ["queued", "processing"].includes(track.status));
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export function TrackList({ tracks }: { tracks: DashboardTrack[] }) {
     return () => window.clearInterval(timer);
   }, [hasPendingTrack, router]);
 
-  async function copyText(trackId: string, action: "embed" | "link", value: string) {
+  async function copyText(trackId: string, action: CopyAction, value: string) {
     try {
       if (!navigator.clipboard?.writeText) throw new Error("Clipboard API unavailable");
       await navigator.clipboard.writeText(value);
@@ -55,7 +57,13 @@ export function TrackList({ tracks }: { tracks: DashboardTrack[] }) {
     window.open(`https://x.com/intent/post?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer,width=720,height=620");
   }
 
-  function copyLabel(trackId: string, action: "embed" | "link", idleLabel: string) {
+  function shareOnReddit(track: DashboardTrack) {
+    const shareUrl = `${appUrl()}/share/reddit/${track.id}`;
+    const title = `${track.title} — listen on PublishMax`;
+    window.open(`https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(title)}`, "_blank", "noopener,noreferrer,width=900,height=720");
+  }
+
+  function copyLabel(trackId: string, action: CopyAction, idleLabel: string) {
     if (copyState?.trackId !== trackId || copyState.action !== action) return idleLabel;
     return copyState.status === "copied" ? "Copied" : "Copy failed";
   }
@@ -74,6 +82,8 @@ export function TrackList({ tracks }: { tracks: DashboardTrack[] }) {
               <summary>Share</summary>
               <div>
                 <button onClick={() => shareOnX(track)} type="button">Share on X</button>
+                <button onClick={() => void copyText(track.id, "discord", `${appUrl()}/share/discord/${track.id}`)} type="button">{copyLabel(track.id, "discord", "Copy Discord link")}</button>
+                <button onClick={() => shareOnReddit(track)} type="button">Share on Reddit</button>
                 <button onClick={() => void copyEmbed(track.id)} type="button">{copyLabel(track.id, "embed", "Copy iframe")}</button>
                 <button onClick={() => void copyText(track.id, "link", `${appUrl()}/embed/${track.id}`)} type="button">{copyLabel(track.id, "link", "Copy player link")}</button>
               </div>
