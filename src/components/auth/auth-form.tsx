@@ -20,9 +20,23 @@ export function AuthForm() {
     const supabase = createClient();
 
     if (mode === "signup") {
+      const displayName = String(data.get("displayName")).trim();
+      const username = String(data.get("username")).trim().toLowerCase();
       const confirmPassword = String(data.get("confirmPassword"));
+      if (!displayName || displayName.length > 80 || !/^[a-z0-9_]{3,30}$/.test(username)) {
+        setMessage("Enter a display name and a valid username.");
+        setLoading(false);
+        return;
+      }
       if (password !== confirmPassword) {
         setMessage("Passwords do not match.");
+        setLoading(false);
+        return;
+      }
+
+      const { data: existingProfile, error: usernameError } = await supabase.from("profiles").select("id").eq("username", username).maybeSingle();
+      if (usernameError || existingProfile) {
+        setMessage(usernameError ? "Could not check username availability." : "That username is already taken.");
         setLoading(false);
         return;
       }
@@ -30,7 +44,10 @@ export function AuthForm() {
       const { data: authData, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: `${window.location.origin}/auth/confirm` },
+        options: {
+          data: { display_name: displayName, username },
+          emailRedirectTo: `${window.location.origin}/auth/confirm`,
+        },
       });
       if (error) {
         setMessage(error.message);
@@ -70,6 +87,15 @@ export function AuthForm() {
         <button aria-selected={mode === "signup"} onClick={() => changeMode("signup")} role="tab" type="button">Create account</button>
       </div>
       <form onSubmit={submit}>
+        {mode === "signup" && (
+          <>
+            <label htmlFor="displayName">Artist name</label>
+            <input autoComplete="name" id="displayName" maxLength={80} name="displayName" placeholder="Your artist or stage name" required />
+            <label htmlFor="username">Username</label>
+            <input autoCapitalize="none" autoComplete="username" id="username" maxLength={30} minLength={3} name="username" pattern="[a-z0-9_]{3,30}" placeholder="artist_name" required />
+            <p className="field-help">Lowercase letters, numbers, and underscores only.</p>
+          </>
+        )}
         <label htmlFor="email">Email address</label>
         <input autoComplete="email" id="email" name="email" placeholder="artist@example.com" required type="email" />
         <label htmlFor="password">Password</label>

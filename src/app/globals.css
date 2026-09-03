@@ -91,6 +91,14 @@ dd { margin: 0; overflow-wrap: anywhere; }
 .status-ready { border-color: #326b43; color: #7fd19b; }
 .status-failed { border-color: #7d3131; color: #ec8585; }
 .secondary-button { padding: 9px 12px; border: 1px solid var(--line); background: transparent; color: var(--text); cursor: pointer; }
+.share-menu { position: relative; }
+.share-menu summary { padding: 9px 12px; border: 1px solid var(--line); color: var(--text); cursor: pointer; list-style: none; text-align: center; }
+.share-menu summary::-webkit-details-marker { display: none; }
+.share-menu[open] summary { border-color: #555; }
+.share-menu > div { position: absolute; z-index: 10; top: calc(100% + 6px); right: 0; width: 180px; border: 1px solid var(--line); background: var(--surface); }
+.share-menu button { display: block; width: 100%; padding: 11px 13px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--text); cursor: pointer; text-align: left; }
+.share-menu button:last-child { border-bottom: 0; }
+.share-menu button:hover { background: #1b1b1b; }
 .empty-state { padding: 50px 0; border-bottom: 1px solid var(--line); color: var(--muted); }
 .empty-state h3 { margin: 0 0 8px; color: var(--text); }
 .upload-dialog { width: min(620px, calc(100vw - 32px)); padding: 30px; border: 1px solid #3a3a3a; border-radius: 2px; background: var(--surface); color: var(--text); }
@@ -143,6 +151,19 @@ textarea:focus { border-color: #777; box-shadow: 0 0 0 2px #ffffff12; }
 .player-progress { height: 3px; background: var(--line); }
 .like-button { border: 0; background: transparent; color: var(--muted); cursor: pointer; }
 .like-button strong { margin-left: 5px; color: var(--text); }
+.embed-controls-linear { grid-template-columns: 42px 1fr; }
+.x-share-page { min-height: 100vh; padding: 36px 42px 80px; }
+.x-share-page > nav { max-width: 1100px; margin: 0 auto 70px; }
+.x-share-card { display: grid; max-width: 1100px; grid-template-columns: minmax(300px, 1fr) minmax(360px, 1fr); margin: 0 auto; border: 1px solid var(--line); background: var(--surface); }
+.x-share-art { min-height: 540px; background-position: center; background-size: cover; }
+.x-share-card > section { display: flex; min-width: 0; flex-direction: column; justify-content: center; padding: clamp(30px, 6vw, 72px); }
+.x-share-card h1 { margin: 0; overflow-wrap: anywhere; font-size: clamp(48px, 7vw, 88px); letter-spacing: -.07em; line-height: .88; text-transform: uppercase; }
+.x-artist-link { width: fit-content; margin: 22px 0 70px; color: var(--muted); }
+.x-card-player { display: grid; width: 100%; height: 180px; grid-template-columns: 180px minmax(0, 1fr); background: #0d0d0d; overflow: hidden; }
+.x-card-art { background-position: center; background-size: cover; }
+.x-card-content { display: flex; min-width: 0; flex-direction: column; justify-content: space-between; padding: 22px 24px; }
+.x-card-content > div p { margin: 0 0 5px; color: var(--muted); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.x-card-content > div h1 { margin: 0; overflow: hidden; font-size: 30px; letter-spacing: -.05em; text-overflow: ellipsis; white-space: nowrap; }
 
 @media (max-width: 700px) {
   .dashboard nav { align-items: start; gap: 20px; }
@@ -162,4 +183,10 @@ textarea:focus { border-color: #777; box-shadow: 0 0 0 2px #ffffff12; }
   .embed-player { grid-template-columns: 120px 1fr; min-height: 150px; }
   .embed-content { padding: 16px; }
   .embed-meta a { display: none; }
+  .x-share-page { padding: 28px 20px 60px; }
+  .x-share-page > nav { margin-bottom: 40px; }
+  .x-share-card { grid-template-columns: 1fr; }
+  .x-share-art { min-height: auto; aspect-ratio: 1; }
+  .x-share-card > section { padding: 32px 24px; }
+  .x-artist-link { margin-bottom: 50px; }
 }

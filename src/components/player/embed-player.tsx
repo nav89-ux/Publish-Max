@@ -9,7 +9,9 @@ function visitorId() {
   return id;
 }
 
-export function EmbedPlayer({ trackId, audioUrl }: { trackId: string; audioUrl: string }) {
+type Attribution = { source: string; medium: string; campaign?: string };
+
+export function EmbedPlayer({ trackId, audioUrl, showLike = true, attribution }: { trackId: string; audioUrl: string; showLike?: boolean; attribution?: Attribution }) {
   const audio = useRef<HTMLAudioElement>(null);
   const session = useRef(crypto.randomUUID());
   const sent = useRef(new Set<string>());
@@ -19,10 +21,11 @@ export function EmbedPlayer({ trackId, audioUrl }: { trackId: string; audioUrl: 
   const [liked, setLiked] = useState(false);
 
   useEffect(() => {
+    if (!showLike) return;
     fetch(`/api/tracks/${trackId}/like?visitorId=${encodeURIComponent(visitorId())}`)
       .then((response) => response.json())
       .then((data) => { setLikes(data.count ?? 0); setLiked(Boolean(data.liked)); });
-  }, [trackId]);
+  }, [showLike, trackId]);
 
   function event(eventType: string, position: number) {
     if (sent.current.has(eventType)) return;
@@ -32,7 +35,16 @@ export function EmbedPlayer({ trackId, audioUrl }: { trackId: string; audioUrl: 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       keepalive: true,
-      body: JSON.stringify({ visitorId: visitorId(), sessionId: session.current, eventType, position, referrer: document.referrer, utmSource: query.get("utm_source"), utmMedium: query.get("utm_medium"), utmCampaign: query.get("utm_campaign") }),
+      body: JSON.stringify({
+        visitorId: visitorId(),
+        sessionId: session.current,
+        eventType,
+        position,
+        referrer: document.referrer,
+        utmSource: attribution?.source ?? query.get("utm_source"),
+        utmMedium: attribution?.medium ?? query.get("utm_medium"),
+        utmCampaign: attribution?.campaign ?? query.get("utm_campaign"),
+      }),
     });
   }
 
@@ -58,11 +70,11 @@ export function EmbedPlayer({ trackId, audioUrl }: { trackId: string; audioUrl: 
   }
 
   return (
-    <div className="embed-controls">
+    <div className={`embed-controls${showLike ? "" : " embed-controls-linear"}`}>
       <audio onEnded={() => { setPlaying(false); event("complete", audio.current?.duration ?? 0); }} onPause={() => setPlaying(false)} onPlay={() => setPlaying(true)} onTimeUpdate={updateProgress} preload="metadata" ref={audio} src={audioUrl} />
       <button aria-label={playing ? "Pause" : "Play"} className="play-button" onClick={toggle} type="button">{playing ? "Ⅱ" : "▶"}</button>
       <div className="player-progress" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>
-      <button aria-pressed={liked} className="like-button" onClick={like} type="button">{liked ? "Liked" : "Like"} <strong>{likes}</strong></button>
+      {showLike && <button aria-pressed={liked} className="like-button" onClick={like} type="button">{liked ? "Liked" : "Like"} <strong>{likes}</strong></button>}
     </div>
   );
 }

@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Content-Security-Policy", value: "frame-ancestors *" }],
       },
       {
+        source: "/share/x/:trackId/player",
+        headers: [{ key: "Content-Security-Policy", value: "frame-ancestors https://x.com https://*.x.com https://twitter.com https://*.twitter.com" }],
+      },
+      {
         source: "/dashboard/:path*",
         headers: [{ key: "X-Frame-Options", value: "DENY" }],
       },
