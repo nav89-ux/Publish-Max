@@ -13,7 +13,7 @@ export default async function XPlayerPage({ params }: { params: Promise<{ trackI
       <div aria-label={`Cover artwork for ${track.title}`} className="x-card-art" role="img" style={{ backgroundImage: `url("${track.cover_url}")` }} />
       <section className="x-card-content">
         <div><p>{artistName}</p><h1>{track.title}</h1></div>
-        <EmbedPlayer audioUrl={track.audio_url} attribution={{ source: "x", medium: "player_card" }} showLike={false} trackId={track.id} />
+        <EmbedPlayer audioUrl={track.audio_url} attribution={{ source: "x", medium: "player_card" }} showLike={false} trackId={track.id} variant="x-linear" />
       </section>
     </main>
   );

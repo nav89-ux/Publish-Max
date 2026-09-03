@@ -2,6 +2,7 @@
 
 import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { CloseIcon, ImageIcon, MusicIcon, UploadIcon } from "@/components/ui/icons";
 
 type Stage = "idle" | "uploading" | "finalizing" | "success";
 
@@ -74,11 +75,11 @@ export function UploadModal() {
 
   return (
     <>
-      <button className="upload-button" onClick={() => dialog.current?.showModal()} type="button">Upload</button>
+      <button className="upload-button" onClick={() => dialog.current?.showModal()} type="button"><UploadIcon /> Upload</button>
       <dialog className="upload-dialog" onClose={() => { setError(""); setStage("idle"); setProgress(0); }} ref={dialog}>
         <div className="dialog-heading">
           <div><p className="eyebrow">New release</p><h2>Upload a track</h2></div>
-          <button aria-label="Close upload dialog" className="dialog-close" disabled={busy} onClick={close} type="button">×</button>
+          <button aria-label="Close upload dialog" className="dialog-close" disabled={busy} onClick={close} type="button"><CloseIcon /></button>
         </div>
         {stage === "success" ? (
           <div className="upload-success" role="status">
@@ -90,10 +91,8 @@ export function UploadModal() {
           <form onSubmit={submit}>
             <label htmlFor="track-title">Track title</label>
             <input id="track-title" maxLength={160} name="title" required />
-            <label htmlFor="track-audio">Audio master · up to 250 MB</label>
-            <input accept="audio/wav,audio/x-wav,audio/aiff,audio/x-aiff,audio/flac,audio/mpeg,audio/mp4,audio/aac,audio/ogg" id="track-audio" name="audio" required type="file" />
-            <label htmlFor="track-cover">Cover art · JPEG, PNG, or WebP</label>
-            <input accept="image/jpeg,image/png,image/webp" id="track-cover" name="cover" required type="file" />
+            <div className="file-field"><label htmlFor="track-audio"><MusicIcon /><span>Audio master<small>WAV, AIFF, FLAC, MP3, AAC or OGG · 250 MB max</small></span></label><input accept="audio/wav,audio/x-wav,audio/aiff,audio/x-aiff,audio/flac,audio/mpeg,audio/mp4,audio/aac,audio/ogg" id="track-audio" name="audio" required type="file" /></div>
+            <div className="file-field"><label htmlFor="track-cover"><ImageIcon /><span>Cover artwork<small>JPEG, PNG or WebP · 10 MB max</small></span></label><input accept="image/jpeg,image/png,image/webp" id="track-cover" name="cover" required type="file" /></div>
             {busy && <div className="upload-progress"><span style={{ width: `${progress}%` }} /></div>}
             {error && <p className="form-message" role="alert">{error}</p>}
             <button className="primary-button" disabled={busy} type="submit">{stage === "uploading" ? `Uploading ${progress}%` : stage === "finalizing" ? "Queueing track..." : "Upload and process"}</button>

@@ -54,7 +54,7 @@ export default async function DiscordSharePage({ params }: PageProps) {
           <p className="eyebrow">Shared from Discord</p>
           <h1>{track.title}</h1>
           <Link className="x-artist-link" href={`/profile/${track.owner_id}`}>{artistName} →</Link>
-          <EmbedPlayer audioUrl={track.audio_url} attribution={{ source: "discord", medium: "link_preview" }} trackId={track.id} />
+          <EmbedPlayer audioUrl={track.audio_url} attribution={{ source: "discord", medium: "link_preview" }} trackId={track.id} variant="inline" />
         </section>
       </article>
     </main>

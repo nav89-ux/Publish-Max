@@ -53,7 +53,7 @@ export default async function RedditSharePage({ params }: PageProps) {
           <p className="eyebrow">Discovered on Reddit</p>
           <h1>{track.title}</h1>
           <Link className="x-artist-link" href={`/profile/${track.owner_id}`}>{artistName} →</Link>
-          <EmbedPlayer audioUrl={track.audio_url} attribution={{ source: "reddit", medium: "link_post" }} trackId={track.id} />
+          <EmbedPlayer audioUrl={track.audio_url} attribution={{ source: "reddit", medium: "link_post" }} trackId={track.id} variant="inline" />
         </section>
       </article>
     </main>

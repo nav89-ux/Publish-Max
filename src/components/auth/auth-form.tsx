@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { ArrowIcon } from "@/components/ui/icons";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "signin" | "signup";
@@ -107,7 +108,7 @@ export function AuthForm() {
           </>
         )}
         <button className="primary-button" disabled={loading} type="submit">
-          {loading ? "Working..." : mode === "signin" ? "Sign in" : "Create account"}
+          <span>{loading ? "Working..." : mode === "signin" ? "Sign in" : "Create account"}</span><ArrowIcon />
         </button>
         {message && <p className="form-message" role="status">{message}</p>}
       </form>

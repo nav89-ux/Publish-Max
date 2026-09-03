@@ -59,7 +59,7 @@ export default async function XSharePage({ params }: PageProps) {
           <p className="eyebrow">Listen now</p>
           <h1>{track.title}</h1>
           <Link className="x-artist-link" href={`/profile/${track.owner_id}`}>{artistName} →</Link>
-          <EmbedPlayer audioUrl={track.audio_url} attribution={{ source: "x", medium: "share_page" }} trackId={track.id} />
+          <EmbedPlayer audioUrl={track.audio_url} attribution={{ source: "x", medium: "share_page" }} trackId={track.id} variant="inline" />
         </section>
       </article>
     </main>
